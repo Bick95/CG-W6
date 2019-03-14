@@ -91,33 +91,45 @@ void MainView::initializeGL() {
     timeIndicator = 0;
 
     /* --------------------------------- CAT MESH -------------------------------------- */
+
+    readInMesh(0, ":/models/cat.obj", ":/textures/cat_diff.png");
+
+    /* --------------------------------- CUBE MESH -------------------------------------- */
+
+    readInMesh(1, ":/models/cube.obj", ":/textures/rug_logo.png");
+
+    // Related to timer: starts calling paintGL()function 60 times per second
+    timer.start(1000.0 / 60.0);
+}
+
+void MainView::readInMesh(unsigned meshIdx, QString path, QString texture){
     // Read in model
-    model[0] = Model(":/models/cat.obj");
+    model[meshIdx] = Model(path);
 
     // Get unitized Mesh vertices, normals, and texture coods
-    model[0].unitize();
-    QVector<QVector3D> meshQ = model[0].getVertices();
-    QVector<QVector3D> normals = model[0].getNormals();
-    QVector<QVector2D> texture_coords = model[0].getTextureCoords();
-    lenMeshes[0] = meshQ.size();
+    model[meshIdx].unitize();
+    QVector<QVector3D> meshQ = model[meshIdx].getVertices();
+    QVector<QVector3D> normals = model[meshIdx].getNormals();
+    QVector<QVector2D> texture_coords = model[meshIdx].getTextureCoords();
+    lenMeshes[meshIdx] = meshQ.size();
 
     // Transform Mesh-QVector3D to Vertex-array to be stored in buffer
-    Vertex mesh[lenMeshes[0]];
-    for (int i = 0; i < lenMeshes[0]; i++){
+    Vertex mesh[lenMeshes[meshIdx]];
+    for (int i = 0; i < lenMeshes[meshIdx]; i++){
         mesh[i] = {meshQ[i].x(), meshQ[i].y(), meshQ[i].z(), normals[i].x(), normals[i].y(), normals[i].z(), texture_coords[i].x(), texture_coords[i].y()};
         //qDebug() << "Mesh: (" << mesh[i].x << "," << mesh[i].y << "," << mesh[i].z << "), Normals: " << mesh[i].nx << "," << mesh[i].ny << "," << mesh[i].nz << " and Texture coords: " << mesh[i].tx << ", " << mesh[i].ty << "\n";
     }
 
     // Create buffer objects
-    glGenVertexArrays(1, &VAB[0]);
-    glGenBuffers(1, &VBO[0]);
+    glGenVertexArrays(1, &VAB[meshIdx]);
+    glGenBuffers(1, &VBO[meshIdx]);
 
     // Bind buffer
-    glBindVertexArray(VAB[0]);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+    glBindVertexArray(VAB[meshIdx]);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO[meshIdx]);
 
     // Bind mesh-array (to be drawn) to corresponding buffer
-    glBufferData(GL_ARRAY_BUFFER, lenMeshes[0] * sizeof (Vertex), mesh, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, lenMeshes[meshIdx] * sizeof (Vertex), mesh, GL_STATIC_DRAW);
 
     // Declare the attributes of a vertex (in compliance with order defined in vertex-shader-file)
     glEnableVertexAttribArray(0); // 0: location
@@ -149,78 +161,9 @@ void MainView::initializeGL() {
 
 
     // Generate and set ptr to texture
-    glGenTextures(1, &textures[0]);
+    glGenTextures(1, &textures[meshIdx]);
     // Reading in & binding texture
-    loadTexture(":/textures/cat_diff.png", textures[0]);
-
-    /* --------------------------------- CUBE MESH -------------------------------------- */
-    // Read in model
-    model[1] = Model(":/models/cube.obj");
-
-    // Get unitized Mesh vertices, normals, and texture coods
-    model[1].unitize();
-    meshQ = model[1].getVertices();
-    normals = model[1].getNormals();
-    texture_coords = model[1].getTextureCoords();
-    lenMeshes[1] = meshQ.size();
-
-    // Transform Mesh-QVector3D to Vertex-array to be stored in buffer
-    Vertex mesh2[lenMeshes[1]];
-    for (int i = 0; i < lenMeshes[1]; i++){
-        mesh2[i] = {meshQ[i].x(), meshQ[i].y(), meshQ[i].z(), normals[i].x(), normals[i].y(), normals[i].z(), texture_coords[i].x(), texture_coords[i].y()};
-        //qDebug() << "Mesh: (" << mesh[i].x << "," << mesh[i].y << "," << mesh[i].z << "), Normals: " << mesh[i].nx << "," << mesh[i].ny << "," << mesh[i].nz << " and Texture coords: " << mesh[i].tx << ", " << mesh[i].ty << "\n";
-    }
-
-    // Create buffer objects
-    glGenVertexArrays(1, &VAB[1]);
-    glGenBuffers(1, &VBO[1]);
-
-    // Bind (mesh2) buffer
-    glBindVertexArray(VAB[1]);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-
-    // Bind mesh-array (to be drawn) to corresponding buffer
-    glBufferData(GL_ARRAY_BUFFER, lenMeshes[1] * sizeof (Vertex), mesh2, GL_STATIC_DRAW);
-
-    // Declare the attributes of a vertex (in compliance with order defined in vertex-shader-file)
-    glEnableVertexAttribArray(0); // 0: location
-    glEnableVertexAttribArray(1); // 1: rgb
-    glEnableVertexAttribArray(2); // mesh-texture-coords
-
-    // Specify how to draw Mesh
-    // Coordinates
-    glVertexAttribPointer(0, // Specifies the index of the generic vertex attribute to be modified.
-                          3, // Specifies the number of components per generic vertex attribute
-                          GL_FLOAT, // Specifies the data type of each component in the array
-                          GL_FALSE, // specifies whether fixed-point data values should be normalized
-                          8 * sizeof(GL_FLOAT), // Specifies the byte offset between consecutive generic vertex attributes. If stride is 0, the generic vertex attributes are understood to be tightly packed in the array. The initial value is 0.
-                          (GLvoid*) 0); // Specifies an offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target. The initial value is 0.
-    // Normals
-    glVertexAttribPointer(1, // Specifies the index of the generic vertex attribute to be modified.
-                          3, // Specifies the number of components per generic vertex attribute
-                          GL_FLOAT, // Specifies the data type of each component in the array
-                          GL_FALSE, // specifies whether fixed-point data values should be normalized
-                          8 * sizeof(GL_FLOAT), // Specifies the byte offset between consecutive generic vertex attributes. If stride is 0, the generic vertex attributes are understood to be tightly packed in the array. The initial value is 0.
-                          (GLvoid*) (3 * sizeof(float))); // Specifies an offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target. The initial value is 0.
-    // Texture-coordinates
-    glVertexAttribPointer(2, // Specifies the index of the generic vertex attribute to be modified.
-                          2, // Specifies the number of components per generic vertex attribute
-                          GL_FLOAT, // Specifies the data type of each component in the array
-                          GL_FALSE, // specifies whether fixed-point data values should be normalized
-                          8 * sizeof(GL_FLOAT), // Specifies the byte offset between consecutive generic vertex attributes. If stride is 0, the generic vertex attributes are understood to be tightly packed in the array. The initial value is 0.
-                          (GLvoid*) (6 * sizeof(float))); // Specifies an offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target. The initial value is 0.
-
-
-    // Cat mesh
-    // Generate and set ptr to texture
-    glGenTextures(1, &textures[1]);
-    // Reading in & binding texture
-    loadTexture(":/textures/rug_logo.png", textures[1]);
-
-    /* --------------------------------- END SECOND MESH -------------------------------------- */
-
-    // Related to timer: starts calling paintGL()function 60 times per second
-    timer.start(1000.0 / 60.0);
+    loadTexture(texture, textures[meshIdx]);
 }
 
 void MainView::loadTexture(QString file, GLuint texturePtr){
@@ -385,6 +328,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     transformationMatrixMesh.translate(x, y, z);
     transformationMatrixMesh.scale(scale);
 
+    // Compute rotation of Mesh in all three directions
     individualRotationX[objectIndex] += fmod(speedX*M_PI, 2*M_PI);
     unsigned totalRotationX = rotationX + individualRotationX[objectIndex];
 
@@ -394,6 +338,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     individualRotationZ[objectIndex] += fmod(speedZ*M_PI, 2*M_PI);
     unsigned totalRotationZ = rotationZ + individualRotationZ[objectIndex];
 
+    // Create rotation matrix
     transformationMatrixMesh.rotate(totalRotationX, QVector3D(1.0, 0.0, 0.0));
     transformationMatrixMesh.rotate(totalRotationY, QVector3D(0.0, 1.0, 0.0));
     transformationMatrixMesh.rotate(totalRotationZ, QVector3D(0.0, 0.0, 1.0));
@@ -418,30 +363,6 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     // Pass normal-preservation-information to shader (Mesh)
     preserveNormals = transformationMatrixMesh.normalMatrix();
     glUniformMatrix3fv(preserveNormalsLocation_ptr, 1, GL_FALSE, preserveNormals.data());
-
-    // Actions specific to shading mode
-    switch (shadingMode) {
-        case ShadingMode::PHONG:{
-            glUniform3f(materialColor_phong, mat.r, mat.g, mat.b);
-            glUniform3f(materialCoefficients_phong, mat.ka, mat.ks, mat.kd);
-            glUniform3f(lightPosLocation_phong, light.x, light.y, light.z);
-            glUniform3f(lightColLocation_phong, light.r, light.g, light.b);
-            glUniform1i(width_phong, width());
-            glUniform1i(height_phong, height());
-            break;
-        }
-        case ShadingMode::NORMAL:{
-            break;
-        }
-        case ShadingMode::GOURAUD:{
-            glUniform3f(lightPosLocation_gouraud, light.x, light.y, light.z);
-            glUniform3f(illuminationCoeffsLocation_gouraud, mat.ka, mat.ks, mat.kd);
-            glUniform3f(lightColLocation_gouraud, light.r, light.g, light.b);
-            glUniform3f(materialColLocation_gouraud, mat.r, mat.g, mat.b);
-            glUniform1i(sampler2Dgouraud_Location, 0); // '0' corresponds to 0 in 'glActiveTexture(GL_TEXTURE0);' (above)
-            break;
-        }
-    }
 
     // Actions specific to shading mode
     switch (shadingMode) {

@@ -117,6 +117,7 @@ public:
 
 protected:
     void initializeGL();
+    void readInMesh(unsigned meshIdx, QString path, QString texture);
     void resizeGL(int newWidth, int newHeight);
     void paintGL();
     void drawShape(int meshIdx, int objectIndex, float x, float y, float z, float speedX, float speedY, float speedZ, float scale);
