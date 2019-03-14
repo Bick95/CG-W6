@@ -18,6 +18,7 @@ uniform mat4 modelTransform;
 uniform mat4 projectionTransform;
 uniform int width;
 uniform int height;
+uniform vec3 lightPos;
 uniform sampler2D sampler;
 
 in vec4 coordinates;
@@ -39,14 +40,14 @@ void main()
     // assumption: view is always at 0,0,0
     vec3 eye_pos = vec3(0,0,0);
     //vec4 coordinates = vec4(gl_FragCoord[0]/width, gl_FragCoord[1]/height, gl_FragCoord[2], gl_FragCoord[3]);
-    vec4 object_transformed = modelTransform*coordinates;
+    vec4 object_transformed = coordinates;
     vec3 hit_point = vec3(object_transformed.xyz); // hit_point from transformed pos coords
     vec3 normal = vertNormal;
     // Compute further vector
 
     vec3 V = normalize(eye_pos - hit_point);
     // lightpos input gets normalized, need to multiply by 10 to be the same as in gouraoud
-    vec3 L = normalize(lPos * 10 - hit_point);
+    vec3 L = normalize(lightPos - hit_point);
     vec3 R = normalize(2*dot(normal,L) * normal - L);
 
     // Compute color-components

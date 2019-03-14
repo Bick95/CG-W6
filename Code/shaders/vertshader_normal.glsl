@@ -32,5 +32,5 @@ void main()
     gl_Position = projectionTransform*modelTransform*gl_Position; //4x4 * 4x1 = 4x1
 
     // Set output
-    vertNormal = preserveNormals*vertNormal_in;
+    vertNormal = normalize(preserveNormals*vertNormal_in);
 }

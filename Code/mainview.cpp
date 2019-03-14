@@ -319,6 +319,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     // Reset everything
     QMatrix3x3 preserveNormals = QMatrix3x3();
     transformationMatrixMesh = QMatrix4x4();
+    transformationMatrixMesh.setToIdentity();
 
     // For drawing textures
     glActiveTexture(GL_TEXTURE0);
@@ -330,18 +331,18 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
 
     // Compute rotation of Mesh in all three directions
     individualRotationX[objectIndex] += fmod(speedX*M_PI, 2*M_PI);
-    unsigned totalRotationX = rotationX + individualRotationX[objectIndex];
+   // unsigned totalRotationX = rotationX + individualRotationX[objectIndex];
 
     individualRotationY[objectIndex] += fmod(speedY*M_PI, 2*M_PI);
     unsigned totalRotationY = rotationY + individualRotationY[objectIndex];
 
     individualRotationZ[objectIndex] += fmod(speedZ*M_PI, 2*M_PI);
-    unsigned totalRotationZ = rotationZ + individualRotationZ[objectIndex];
+  //  unsigned totalRotationZ = rotationZ + individualRotationZ[objectIndex];
 
     // Create rotation matrix
-    transformationMatrixMesh.rotate(totalRotationX, QVector3D(1.0, 0.0, 0.0));
+ //   transformationMatrixMesh.rotate(totalRotationX, QVector3D(1.0, 0.0, 0.0));
     transformationMatrixMesh.rotate(totalRotationY, QVector3D(0.0, 1.0, 0.0));
-    transformationMatrixMesh.rotate(totalRotationZ, QVector3D(0.0, 0.0, 1.0));
+   // transformationMatrixMesh.rotate(totalRotationZ, QVector3D(0.0, 0.0, 1.0));
 
     // Pass view-transform-information to shader
     glUniformMatrix4fv(projectionTransformationLocation_ptr, 1, GL_FALSE, transformationPerspective.data()); /* ---------------- TRY TRANSLATING THIS MATRIX FOR VIEW-POINT-PROJECTION! ----------- */
@@ -358,7 +359,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     // Pass transformation matrix for mesh to shader
     glUniformMatrix4fv(transformationLocation_ptr, 1, GL_FALSE, transformationMatrixMesh.data());
     glBindVertexArray(VAB[meshIdx]);
-    glDrawArrays(GL_TRIANGLES,0,(int)lenMeshes[meshIdx]*3); // Nr of triangles * nr of vertices per triangle
+
 
     // Pass normal-preservation-information to shader (Mesh)
     preserveNormals = transformationMatrixMesh.normalMatrix();
@@ -387,6 +388,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
             break;
         }
     }
+    glDrawArrays(GL_TRIANGLES,0,(int)lenMeshes[meshIdx]*3); // Nr of triangles * nr of vertices per triangle
 }
 
 /**

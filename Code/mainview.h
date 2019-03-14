@@ -53,6 +53,7 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     // Various transformations
     QMatrix4x4 transformationMatrixMesh = QMatrix4x4();
     QMatrix4x4 transformationPerspective = QMatrix4x4();
+    QMatrix4x4 transformationView = QMatrix4x4();
 
     // Pointers for changing between vertex shaders
     GLint transformationLocation_ptr;

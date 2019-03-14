@@ -30,20 +30,36 @@ out vec4 coordinates;
 out vec2 textureCoords;
 
 void main()
+
 {
+
     gl_Position = vec4(vertCoordinates_in, 1.0);
 
+    vec4 coordToPass = modelTransform*gl_Position;
+
+
     // Transform input vector
+
     gl_Position = projectionTransform*modelTransform*gl_Position; //4x4 * 4x1 = 4x1
 
+
     // Preserve Normals' original relative angles and normalize them
+
     vec3 normal = normalize(preserveNormals*vertNormal_in);
 
+
     vertNormal = normal;
+
     color = materialColor;
+
     coeffs = materialCoeffs;
+
     lColor = lightColor;
+
     lPos = lightPos;
-    coordinates = gl_Position;
+
+    coordinates = coordToPass;
+
     textureCoords = mesh_coords;
+
 }
