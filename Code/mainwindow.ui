@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1048</width>
-    <height>770</height>
+    <height>1036</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -494,16 +494,42 @@
         <widget class="QFrame" name="zoomBox">
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QSlider" name="zoomSlider">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
+           <widget class="QFrame" name="innerZoomSliderBox">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="zeroPercentLabel">
+               <property name="text">
+                <string>0%</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="ZoomSlider">
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>50</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="hundredPercentLabel">
+               <property name="text">
+                <string>100%</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="ResetZoomButton">
             <property name="text">
-             <string>resetZoomButton</string>
+             <string>Reset zoom</string>
             </property>
            </widget>
           </item>
@@ -517,7 +543,7 @@
            <widget class="QFrame" name="viewRotationBox">
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
-              <widget class="QDial" name="vrDialX">
+              <widget class="QDial" name="ViewRotationDialX">
                <property name="maximum">
                 <number>359</number>
                </property>
@@ -533,7 +559,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QDial" name="vrDialY">
+              <widget class="QDial" name="ViewRotationDialY">
                <property name="maximum">
                 <number>359</number>
                </property>
@@ -549,7 +575,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QDial" name="vrDialZ">
+              <widget class="QDial" name="ViewRotationDialZ">
                <property name="maximum">
                 <number>359</number>
                </property>
