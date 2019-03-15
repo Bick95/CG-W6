@@ -60,7 +60,7 @@
           </size>
          </property>
          <property name="title">
-          <string>Rotation</string>
+          <string>Object rotation</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
@@ -155,7 +155,7 @@
           </size>
          </property>
          <property name="title">
-          <string>Scaling</string>
+          <string>Object scaling</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
@@ -244,14 +244,21 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
+        <widget class="QLabel" name="vrLabel">
+         <property name="text">
+          <string>View rotation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="1">
         <widget class="QLabel" name="label">
          <property name="text">
           <string>Light position [-10,10]</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="17" column="1">
         <widget class="QFrame" name="LightPosBox">
          <layout class="QGridLayout" name="gridLayout">
           <item row="2" column="1">
@@ -345,7 +352,7 @@
          </layout>
         </widget>
        </item>
-       <item row="6" column="1">
+       <item row="18" column="1">
         <widget class="QGroupBox" name="groupBox">
          <property name="minimumSize">
           <size>
@@ -474,6 +481,100 @@
            </item>
           </layout>
          </widget>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLabel" name="zoomLabel">
+         <property name="text">
+          <string>Zoom</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QFrame" name="zoomBox">
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QSlider" name="zoomSlider">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>resetZoomButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QFrame" name="vrBox">
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QFrame" name="viewRotationBox">
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <widget class="QDial" name="vrDialX">
+               <property name="maximum">
+                <number>359</number>
+               </property>
+               <property name="wrapping">
+                <bool>true</bool>
+               </property>
+               <property name="notchTarget">
+                <double>12.000000000000000</double>
+               </property>
+               <property name="notchesVisible">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDial" name="vrDialY">
+               <property name="maximum">
+                <number>359</number>
+               </property>
+               <property name="wrapping">
+                <bool>true</bool>
+               </property>
+               <property name="notchTarget">
+                <double>12.000000000000000</double>
+               </property>
+               <property name="notchesVisible">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDial" name="vrDialZ">
+               <property name="maximum">
+                <number>359</number>
+               </property>
+               <property name="wrapping">
+                <bool>true</bool>
+               </property>
+               <property name="notchTarget">
+                <double>12.000000000000000</double>
+               </property>
+               <property name="notchesVisible">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="resetViewButton">
+            <property name="text">
+             <string>Reset view</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>

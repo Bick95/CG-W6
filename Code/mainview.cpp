@@ -331,18 +331,18 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
 
     // Compute rotation of Mesh in all three directions
     individualRotationX[objectIndex] += fmod(speedX*M_PI, 2*M_PI);
-   // unsigned totalRotationX = rotationX + individualRotationX[objectIndex];
+    unsigned totalRotationX = rotationX + individualRotationX[objectIndex];
 
     individualRotationY[objectIndex] += fmod(speedY*M_PI, 2*M_PI);
     unsigned totalRotationY = rotationY + individualRotationY[objectIndex];
 
     individualRotationZ[objectIndex] += fmod(speedZ*M_PI, 2*M_PI);
-  //  unsigned totalRotationZ = rotationZ + individualRotationZ[objectIndex];
+    unsigned totalRotationZ = rotationZ + individualRotationZ[objectIndex];
 
     // Create rotation matrix
- //   transformationMatrixMesh.rotate(totalRotationX, QVector3D(1.0, 0.0, 0.0));
+    transformationMatrixMesh.rotate(totalRotationX, QVector3D(1.0, 0.0, 0.0));
     transformationMatrixMesh.rotate(totalRotationY, QVector3D(0.0, 1.0, 0.0));
-   // transformationMatrixMesh.rotate(totalRotationZ, QVector3D(0.0, 0.0, 1.0));
+    transformationMatrixMesh.rotate(totalRotationZ, QVector3D(0.0, 0.0, 1.0));
 
     // Pass view-transform-information to shader
     glUniformMatrix4fv(projectionTransformationLocation_ptr, 1, GL_FALSE, transformationPerspective.data()); /* ---------------- TRY TRANSLATING THIS MATRIX FOR VIEW-POINT-PROJECTION! ----------- */
