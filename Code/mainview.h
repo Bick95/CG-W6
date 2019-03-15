@@ -39,6 +39,10 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     float rotationX;
     float rotationY;
     float rotationZ;
+    float viewRotationX;
+    float viewRotationY;
+    float viewRotationZ;
+    float zoom;
     float individualRotationX[4]; // 1 entry per shape to be drawn due to different rotational speeds
     float individualRotationY[4];
     float individualRotationZ[4];
@@ -53,21 +57,25 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     // Various transformations
     QMatrix4x4 transformationMatrixMesh = QMatrix4x4();
     QMatrix4x4 transformationPerspective = QMatrix4x4();
+    QMatrix4x4 transformationMatrixView = QMatrix4x4();
     QMatrix4x4 transformationView = QMatrix4x4();
 
     // Pointers for changing between vertex shaders
     GLint transformationLocation_ptr;
     GLint projectionTransformationLocation_ptr;
+    GLint viewTransformationLocation_ptr;
     GLint preserveNormalsLocation_ptr;
 
     // Info regarding VertexShader Normal
     GLint transformationLocation_normal;
     GLint projectionTransformationLocation_normal;
+    GLint viewTransformationLocation_normal;
     GLint preserveNormalsLocation_normal;
 
     // Info regarding VertexShader Gouraud
     GLint transformationLocation_gouraud;
     GLint projectionTransformationLocation_gouraud;
+    GLint viewTransformationLocation_gouraud;
     GLint preserveNormalsLocation_gouraud;
     GLint lightPosLocation_gouraud;
     GLint lightColLocation_gouraud;
@@ -78,6 +86,7 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     // Info regarding VertexShader Phong
     GLint transformationLocation_phong;
     GLint projectionTransformationLocation_phong;
+    GLint viewTransformationLocation_phong;
     GLint preserveNormalsLocation_phong;
     GLint materialColor_phong;
     GLint materialCoefficients_phong;
@@ -115,6 +124,12 @@ public:
     void setLightRed(int x);
     void setLightGreen(int x);
     void setLightBlue(int x);
+    void setViewX(int x);
+    void setViewY(int y);
+    void setViewZ(int z);
+    void resetView();
+    void setZoom(int z);
+    void resetZoom();
 
 protected:
     void initializeGL();

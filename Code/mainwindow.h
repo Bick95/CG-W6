@@ -42,6 +42,17 @@ private slots:
     void on_Light_Green_Slider_sliderMoved(int value);
     void on_Light_Blue_Slider_sliderMoved(int value);
 
+    // Pretend changing view location
+    void on_ResetViewButton_clicked(bool checked);
+    void on_ViewRotationDialX_sliderMoved(int value);
+    void on_ViewRotationDialY_sliderMoved(int value);
+    void on_ViewRotationDialZ_sliderMoved(int value);
+
+    // Manage zoom
+    void on_ZoomSlider_sliderMoved(int value);
+    void on_ResetZoomButton_clicked(bool checked);
+
+
 };
 
 #endif // MAINWINDOW_H

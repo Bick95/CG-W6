@@ -135,3 +135,35 @@ void MainWindow::on_Light_Blue_Slider_sliderMoved(int value)
 {
     ui->mainView->setLightBlue(value);
 }
+
+
+// Pretend changing view location
+void MainWindow::on_ResetViewButton_clicked(bool checked)
+{
+    ui->mainView->resetView();
+};
+
+void MainWindow::on_ViewRotationDialX_sliderMoved(int value)
+{
+    ui->mainView->setViewX(value);
+};
+
+void MainWindow::on_ViewRotationDialY_sliderMoved(int value)
+{
+    ui->mainView->setViewY(value);
+};
+
+void MainWindow::on_ViewRotationDialZ_sliderMoved(int value)
+{
+    ui->mainView->setViewZ(value);
+};
+
+void MainWindow::on_ZoomSlider_sliderMoved(int value)
+{
+    ui->mainView->setZoom(value);
+};
+
+void MainWindow::on_ResetZoomButton_clicked(bool checked)
+{
+    ui->mainView->resetZoom();
+};

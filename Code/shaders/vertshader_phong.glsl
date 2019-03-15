@@ -12,6 +12,7 @@ layout (location = 2) in vec2 mesh_coords;
 // uniform mat4 modelTransform; for example
 uniform mat4 modelTransform;
 uniform mat4 projectionTransform;
+uniform mat4 viewTransform;
 uniform mat3x3 preserveNormals;
 uniform vec3 materialColor;
 uniform vec3 materialCoeffs;
@@ -40,7 +41,7 @@ void main()
 
     // Transform input vector
 
-    gl_Position = projectionTransform*modelTransform*gl_Position; //4x4 * 4x1 = 4x1
+    gl_Position = projectionTransform*viewTransform*modelTransform*gl_Position; //4x4 * 4x1 = 4x1
 
 
     // Preserve Normals' original relative angles and normalize them

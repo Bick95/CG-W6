@@ -89,6 +89,8 @@ void MainView::initializeGL() {
     }
 
     timeIndicator = 0;
+    resetView();
+    resetZoom();
 
     /* --------------------------------- CAT MESH -------------------------------------- */
 
@@ -198,6 +200,7 @@ void MainView::createShaderProgram()
     // Get locations of where transformation matrices are stored in shader
     transformationLocation_normal = shaderProgram_normal.uniformLocation("modelTransform");
     projectionTransformationLocation_normal = shaderProgram_normal.uniformLocation("projectionTransform");
+    viewTransformationLocation_normal = shaderProgram_normal.uniformLocation("viewTransform");
     preserveNormalsLocation_normal = shaderProgram_normal.uniformLocation("preserveNormals");
 
 
@@ -216,6 +219,7 @@ void MainView::createShaderProgram()
     // General
     transformationLocation_gouraud = shaderProgram_gouraud.uniformLocation("modelTransform");
     projectionTransformationLocation_gouraud = shaderProgram_gouraud.uniformLocation("projectionTransform");
+    viewTransformationLocation_gouraud = shaderProgram_gouraud.uniformLocation("viewTransform");
     preserveNormalsLocation_gouraud = shaderProgram_gouraud.uniformLocation("preserveNormals");
     // Specific
     lightPosLocation_gouraud = shaderProgram_gouraud.uniformLocation("lightPos");
@@ -239,6 +243,7 @@ void MainView::createShaderProgram()
     // Get locations of where transformation matrices are stored in shader
     transformationLocation_phong = shaderProgram_phong.uniformLocation("modelTransform");
     projectionTransformationLocation_phong = shaderProgram_phong.uniformLocation("projectionTransform");
+    viewTransformationLocation_phong = shaderProgram_phong.uniformLocation("viewTransform");
     preserveNormalsLocation_phong = shaderProgram_phong.uniformLocation("preserveNormals");
     // Specific
     materialColor_phong = shaderProgram_phong.uniformLocation("materialColor");
@@ -269,6 +274,7 @@ void MainView::paintGL() {
             qDebug() << "shading mode Phong = " << shadingMode;
             temp = &shaderProgram_phong;
             projectionTransformationLocation_ptr = projectionTransformationLocation_phong;
+            viewTransformationLocation_ptr = viewTransformationLocation_phong;
             transformationLocation_ptr = transformationLocation_phong;
             preserveNormalsLocation_ptr = preserveNormalsLocation_phong;
             break;
@@ -277,6 +283,7 @@ void MainView::paintGL() {
             qDebug() << "shading mode Normal = " << shadingMode;
             temp = &shaderProgram_normal;
             projectionTransformationLocation_ptr = projectionTransformationLocation_normal;
+            viewTransformationLocation_ptr = viewTransformationLocation_normal;
             transformationLocation_ptr = transformationLocation_normal;
             preserveNormalsLocation_ptr = preserveNormalsLocation_normal;
             break;
@@ -285,6 +292,7 @@ void MainView::paintGL() {
             qDebug() << "shading mode Gouraud = " << shadingMode;
            temp = &shaderProgram_gouraud;
            projectionTransformationLocation_ptr = projectionTransformationLocation_gouraud;
+           viewTransformationLocation_ptr = viewTransformationLocation_gouraud;
            transformationLocation_ptr = transformationLocation_gouraud;
            preserveNormalsLocation_ptr = preserveNormalsLocation_gouraud;
            break;
@@ -319,6 +327,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     // Reset everything
     QMatrix3x3 preserveNormals = QMatrix3x3();
     transformationMatrixMesh = QMatrix4x4();
+    transformationMatrixView = QMatrix4x4();
     transformationMatrixMesh.setToIdentity();
 
     // For drawing textures
@@ -345,15 +354,29 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     transformationMatrixMesh.rotate(totalRotationZ, QVector3D(0.0, 0.0, 1.0));
 
     // Pass view-transform-information to shader
-    glUniformMatrix4fv(projectionTransformationLocation_ptr, 1, GL_FALSE, transformationPerspective.data()); /* ---------------- TRY TRANSLATING THIS MATRIX FOR VIEW-POINT-PROJECTION! ----------- */
+    glUniformMatrix4fv(projectionTransformationLocation_ptr, 1, GL_FALSE, transformationPerspective.data());
 
-    /* --------------------------------------------------------------
-     *
-     *
-     * TRY TRANSLATING THIS MATRIX (above) FOR VIEW-POINT-PROJECTION!
-     *
-     *
-     * -------------------------------------------------------------- */
+    // Change view - Viewtransform
+    transformationMatrixView.rotate(viewRotationX, QVector3D(1.0, 0.0, 0.0));
+    transformationMatrixView.rotate(viewRotationY, QVector3D(0.0, 1.0, 0.0));
+    transformationMatrixView.rotate(viewRotationZ, QVector3D(0.0, 0.0, 1.0));
+    transformationMatrixView = transformationMatrixView.inverted();
+
+    // Pass view-transform-information to shader
+    glUniformMatrix4fv(viewTransformationLocation_ptr, 1, GL_FALSE, transformationMatrixView.data());
+
+
+    // Zooming
+    //glMatrixMode(GL_PROJECTION);
+    //glLoadIdentity();
+    //gluPerspective(180.0f, (double)width()/(double)height(), 0.0f, 5.0f);
+
+
+    //glTranslatef(0.0f, 0.0f, -500.0f);
+
+   // lookAt(viewRotationX, viewRotationY, viewRotationZ, /* look from camera XYZ */ 0, 0, 0, /* look at the origin */ 0, 1, 0); /* positive Y up vector */
+
+
 
     // Pass shape to be drawn to Vertex-Shader - Mesh
     // Pass transformation matrix for mesh to shader
@@ -497,6 +520,52 @@ void MainView::setShadingMode(ShadingMode shading)
     shadingMode = shading;
     paintGL(); // update() didn't work here
 }
+
+
+void MainView::setViewX(int x)
+{
+    qDebug() << "Set view x: " << x;
+    viewRotationX = (float)x;
+    update();
+};
+
+void MainView::setViewY(int y)
+{
+    qDebug() << "Set view y: " << y;
+    viewRotationY = (float)y;
+    update();
+};
+
+void MainView::setViewZ(int z)
+{
+    qDebug() << "Set view z: " << z;
+    viewRotationZ = (float)z;
+    update();
+};
+
+void MainView::resetView()
+{
+    qDebug() << "Reset view";
+    viewRotationX = 0.0f;
+    viewRotationY = 0.0f;
+    viewRotationZ = 0.0f;
+    update();
+};
+
+void MainView::setZoom(int z)
+{
+    qDebug() << "Set zoom: " << zoom;
+    zoom = (float)z;
+    update();
+};
+
+void MainView::resetZoom()
+{
+    qDebug() << "Reset zoom";
+    zoom = 50.0f;
+    update();
+};
+
 
 // --- Private helpers
 
