@@ -24,18 +24,20 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     // Light values: {red, gree, blue, x,y,z}
     Light light = {1,1,1,0.0,0.0,0.0};
 
-    Model model[2];
-    unsigned lenMeshes[2];
+    const static unsigned models = 3; // Number of different models to be used for drawing
+
+    Model model[models];
+    unsigned lenMeshes[models];
 
     // Texture components
-    GLuint textures[2];
+    GLuint textures[models];
 
     GLuint shadingMode = ShadingMode::PHONG;
 
     // Factors
     float scalingFactor;
-    unsigned shapesDrawn = 4;
-    float individualScalingFactors[4];
+    const static unsigned shapesDrawn = 5; // Total number of instances of models to be drawn
+    float individualScalingFactors[shapesDrawn];
     float rotationX;
     float rotationY;
     float rotationZ;
@@ -43,15 +45,15 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     float viewRotationY;
     float viewRotationZ;
     float zoom;
-    float individualRotationX[4]; // 1 entry per shape to be drawn due to different rotational speeds
-    float individualRotationY[4];
-    float individualRotationZ[4];
+    float individualRotationX[shapesDrawn]; // 1 entry per shape to be drawn due to different rotational speeds
+    float individualRotationY[shapesDrawn];
+    float individualRotationZ[shapesDrawn];
     float timeIndicator = 0.0f;
 
 
     // Buffers
-    GLuint VBO[2];
-    GLuint VAB[2];
+    GLuint VBO[models];
+    GLuint VAB[models];
 
 
     // Various transformations
@@ -133,7 +135,7 @@ public:
 
 protected:
     void initializeGL();
-    void readInMesh(unsigned meshIdx, QString path, QString texture);
+    void readInMesh(unsigned meshIdx, QString path, QString texture = nullptr);
     void resizeGL(int newWidth, int newHeight);
     void paintGL();
     void drawShape(int meshIdx, int objectIndex, float x, float y, float z, float speedX, float speedY, float speedZ, float scale);

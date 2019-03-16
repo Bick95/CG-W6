@@ -31,9 +31,9 @@ MainView::~MainView() {
     debugLogger->stopLogging();
 
     // Empty buffers...
-    glDeleteBuffers(2, VBO);
-    glDeleteVertexArrays(2, VAB);
-    glDeleteTextures(2, textures);
+    glDeleteBuffers(models, VBO);
+    glDeleteVertexArrays(models, VAB);
+    glDeleteTextures(models, textures);
 
     qDebug() << "MainView destructor";
 }
@@ -100,6 +100,10 @@ void MainView::initializeGL() {
 
     readInMesh(1, ":/models/cube.obj", ":/textures/rug_logo.png");
 
+    /* --------------------------------- PLANE MESH -------------------------------------- */
+
+    readInMesh(2, ":/models/grid.obj");
+
     // Related to timer: starts calling paintGL()function 60 times per second
     timer.start(1000.0 / 60.0);
 }
@@ -161,11 +165,12 @@ void MainView::readInMesh(unsigned meshIdx, QString path, QString texture){
                           8 * sizeof(GL_FLOAT), // Specifies the byte offset between consecutive generic vertex attributes. If stride is 0, the generic vertex attributes are understood to be tightly packed in the array. The initial value is 0.
                           (GLvoid*) (6 * sizeof(float))); // Specifies an offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target. The initial value is 0.
 
-
-    // Generate and set ptr to texture
-    glGenTextures(1, &textures[meshIdx]);
-    // Reading in & binding texture
-    loadTexture(texture, textures[meshIdx]);
+    if (texture != nullptr){
+        // Generate and set ptr to texture
+        glGenTextures(1, &textures[meshIdx]);
+        // Reading in & binding texture
+        loadTexture(texture, textures[meshIdx]);
+    }
 }
 
 void MainView::loadTexture(QString file, GLuint texturePtr){
@@ -367,16 +372,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
 
 
     // Zooming
-    //glMatrixMode(GL_PROJECTION);
-    //glLoadIdentity();
-    //gluPerspective(180.0f, (double)width()/(double)height(), 0.0f, 5.0f);
-
-
-    //glTranslatef(0.0f, 0.0f, -500.0f);
-
-   // lookAt(viewRotationX, viewRotationY, viewRotationZ, /* look from camera XYZ */ 0, 0, 0, /* look at the origin */ 0, 1, 0); /* positive Y up vector */
-
-
+    // TODO for competition!
 
     // Pass shape to be drawn to Vertex-Shader - Mesh
     // Pass transformation matrix for mesh to shader
