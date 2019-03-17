@@ -21,12 +21,12 @@ out vec2 uv;
 
 void main()
 {
-    vec4 position = vec4(vertCoordinates_in, 1.0);
-
+    gl_Position = vec4(vertCoordinates_in, 1.0);
+    //position[2] = position[0]%0.2;
 
     // Transform input vector -- Check again
-    gl_Position = projectionTransform*viewTransform*modelTransform*position;
+    gl_Position = projectionTransform*viewTransform*modelTransform*gl_Position;
 
     // Set output
-    uv = vec2(uv[0], uv[1]);
+    uv = vec2(uv_coords_in[0], uv_coords_in[1]);
 }

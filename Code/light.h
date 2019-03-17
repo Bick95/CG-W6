@@ -1,9 +1,9 @@
-#ifndef LIGHT_H
-#define LIGHT_H
+#ifndef WAVE_H
+#define WAVE_H
 
-struct Light {
-    double r,g,b,x,y,z;
+struct Wave {
+    double amplitude, frequency, phase;
 };
 
 
-#endif // LIGHT_H
+#endif // WAVE_H

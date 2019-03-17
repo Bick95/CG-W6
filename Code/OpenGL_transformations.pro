@@ -25,7 +25,8 @@ HEADERS  += mainwindow.h \
     triangle.h \
     material.h \
     vertex.h \
-    light.h
+    light.h \
+    wave.h
 
 FORMS    += mainwindow.ui
 

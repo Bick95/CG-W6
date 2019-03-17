@@ -209,6 +209,18 @@ void MainView::createShaderProgram()
     viewTransformationLocation_normal = shaderProgram_normal.uniformLocation("viewTransform");
     preserveNormalsLocation_normal = shaderProgram_normal.uniformLocation("preserveNormals");
 
+    // SPECIFIC FOR NORMAL (IN FACT FOR WATER)
+    timeCoefficient = shaderProgram_normal.uniformLocation("timeCoeff");
+    wave1location = shaderProgram_normal.uniformLocation("wave1");
+    wave2location = shaderProgram_normal.uniformLocation("wave2");
+    wave3location = shaderProgram_normal.uniformLocation("wave3");
+    materialColor_normal = shaderProgram_normal.uniformLocation("color");
+    materialCoefficients_normal = shaderProgram_normal.uniformLocation("coeffs");
+    lightPosLocation_normal = shaderProgram_normal.uniformLocation("lPos");
+    lightColLocation_normal = shaderProgram_normal.uniformLocation("lColor");
+
+
+
 
     // GOURAUD
     // Create shader program Gouraud
@@ -274,6 +286,8 @@ void MainView::createShaderProgram()
     projectionTransformationLocation_water = shaderProgram_water.uniformLocation("projectionTransform");
     viewTransformationLocation_water = shaderProgram_water.uniformLocation("viewTransform");
     preserveNormalsLocation_water = shaderProgram_water.uniformLocation("preserveNormals");
+
+    //WATER SPECIFIC
 }
 
 // --- OpenGL drawing
@@ -335,11 +349,11 @@ void MainView::paintGL() {
     if (shadingMode != ShadingMode::WATER){
         /* ---------------- DRAWING CAT -------------------- */
 
-        drawShape(0, 0, 3.7f, 0, -10, 0.1f, 0.1f, 0.3f, scalingFactor);
+        //drawShape(0, 0, 3.7f, 0, -10, 0.1f, 0.1f, 0.3f, scalingFactor);
 
         /* ---------------- DRAWING CUBE -------------------- */
 
-        drawShape(1, 1, -3.7f, 0, -10, 0.2f, 0.2f, 0.1f, scalingFactor/4);
+        //drawShape(1, 1, -3.7f, 0, -10, 0.2f, 0.2f, 0.1f, scalingFactor/4);
 
         /* ---------------- DRAWING FLOATING CUBE -------------------- */
 
@@ -351,7 +365,7 @@ void MainView::paintGL() {
 
         /* ---------------- DRAWING QUAD -------------------- */
 
-        drawShape(2, 4, 2.0f, -2,-10, 0.1f, 0.2f, 0.05f, scalingFactor);
+        drawShape(2, 4, 2.0f, -2,-10, 0.0f, 0.0f, 0.0f, scalingFactor/3);
 
 
         timeIndicator += fmod(0.005 * M_PI, 2 * M_PI); // Let objects float around by using this 'angle' in [0,2pi)
@@ -430,6 +444,14 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
             break;
         }
         case ShadingMode::NORMAL:{
+            glUniform1f(timeCoefficient, timeIndicator);
+            glUniform3f(wave1location ,wave1.amplitude, wave1.frequency, wave1.phase);
+            glUniform3f(wave2location ,wave2.amplitude, wave2.frequency, wave2.phase);
+            glUniform3f(wave3location ,wave3.amplitude, wave3.frequency, wave3.phase);
+            glUniform3f(materialColor_normal, mat.r, mat.g, mat.b);
+            glUniform3f(materialCoefficients_normal, mat.ka, mat.ks, mat.kd);
+            glUniform3f(lightPosLocation_normal, light.x, light.y, light.z);
+            glUniform3f(lightColLocation_normal, light.r, light.g, light.b);
             break;
         }
         case ShadingMode::GOURAUD:{
@@ -442,6 +464,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
         }
         case ShadingMode::WATER:{
             // TODO
+            glUniform1f(timeCoefficient, 0.5);
             break;
         }
     }

@@ -17,5 +17,6 @@
         <file>models/grid.obj</file>
         <file>shaders/vertshader_water.glsl</file>
         <file>shaders/fragshader_water.glsl</file>
+        <file>models/dog.obj</file>
     </qresource>
 </RCC>

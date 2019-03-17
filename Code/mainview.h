@@ -4,6 +4,7 @@
 #include "model.h"
 #include "material.h"
 #include "light.h"
+#include "wave.h"
 
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -23,6 +24,11 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
 
     // Light values: {red, gree, blue, x,y,z}
     Light light = {1,1,1,0.0,0.0,0.0};
+
+    //waves
+    Wave wave1 = {0.1, 1.0, 0.0};
+    Wave wave2 = {0.08, 3.0, 0.5};
+    Wave wave3 = {0.05, 5.0, 1.0};
 
     const static unsigned models = 3; // Number of different models to be used for drawing
 
@@ -73,6 +79,16 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     GLint projectionTransformationLocation_normal;
     GLint viewTransformationLocation_normal;
     GLint preserveNormalsLocation_normal;
+    //To move to water shader later
+    GLint timeCoefficient;
+    GLint wave1location;
+    GLint wave2location;
+    GLint wave3location;
+    GLint materialColor_normal;
+    GLint materialCoefficients_normal;
+    GLint lightPosLocation_normal;
+    GLint lightColLocation_normal;
+
 
     // Info regarding VertexShader Gouraud
     GLint transformationLocation_gouraud;
@@ -97,7 +113,7 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     GLint width_phong;
     GLint height_phong;
 
-    // Info regarding VertexShader Normal
+    // Info regarding VertexShader Water
     GLint transformationLocation_water;
     GLint projectionTransformationLocation_water;
     GLint viewTransformationLocation_water;
