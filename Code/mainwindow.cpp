@@ -77,7 +77,6 @@ void MainWindow::on_NormalButton_toggled(bool checked)
         ui->mainView->update();
     }
 }
-
 void MainWindow::on_WaterButton_toggled(bool checked)
 {
     if (checked)

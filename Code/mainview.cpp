@@ -193,6 +193,7 @@ void MainView::loadTexture(QString file, GLuint texturePtr){
 
 void MainView::createShaderProgram()
 {
+
     // NORMAL
     // Create shader program Normal
     shaderProgram_normal.addShaderFromSourceFile(QOpenGLShader::Vertex,
@@ -206,21 +207,7 @@ void MainView::createShaderProgram()
     // Get locations of where transformation matrices are stored in shader
     transformationLocation_normal = shaderProgram_normal.uniformLocation("modelTransform");
     projectionTransformationLocation_normal = shaderProgram_normal.uniformLocation("projectionTransform");
-    viewTransformationLocation_normal = shaderProgram_normal.uniformLocation("viewTransform");
     preserveNormalsLocation_normal = shaderProgram_normal.uniformLocation("preserveNormals");
-
-    // SPECIFIC FOR NORMAL (IN FACT FOR WATER)
-    timeCoefficient = shaderProgram_normal.uniformLocation("timeCoeff");
-    wave1location = shaderProgram_normal.uniformLocation("wave1");
-    wave2location = shaderProgram_normal.uniformLocation("wave2");
-    wave3location = shaderProgram_normal.uniformLocation("wave3");
-    materialColor_normal = shaderProgram_normal.uniformLocation("color");
-    materialCoefficients_normal = shaderProgram_normal.uniformLocation("coeffs");
-    lightPosLocation_normal = shaderProgram_normal.uniformLocation("lPos");
-    lightColLocation_normal = shaderProgram_normal.uniformLocation("lColor");
-
-
-
 
     // GOURAUD
     // Create shader program Gouraud
@@ -287,7 +274,16 @@ void MainView::createShaderProgram()
     viewTransformationLocation_water = shaderProgram_water.uniformLocation("viewTransform");
     preserveNormalsLocation_water = shaderProgram_water.uniformLocation("preserveNormals");
 
-    //WATER SPECIFIC
+    // SPECIFIC FOR WATER
+    timeCoefficient = shaderProgram_water.uniformLocation("timeCoeff");
+    wave1location = shaderProgram_water.uniformLocation("wave1");
+    wave2location = shaderProgram_water.uniformLocation("wave2");
+    wave3location = shaderProgram_water.uniformLocation("wave3");
+    materialColor_water = shaderProgram_water.uniformLocation("color");
+    materialCoefficients_water = shaderProgram_water.uniformLocation("coeffs");
+    lightPosLocation_water = shaderProgram_water.uniformLocation("lPos");
+    lightColLocation_water = shaderProgram_water.uniformLocation("lColor");
+
 }
 
 // --- OpenGL drawing
@@ -319,19 +315,18 @@ void MainView::paintGL() {
             qDebug() << "shading mode Normal = " << shadingMode;
             temp = &shaderProgram_normal;
             projectionTransformationLocation_ptr = projectionTransformationLocation_normal;
-            viewTransformationLocation_ptr = viewTransformationLocation_normal;
             transformationLocation_ptr = transformationLocation_normal;
             preserveNormalsLocation_ptr = preserveNormalsLocation_normal;
             break;
         }
         case ShadingMode::GOURAUD:{
             qDebug() << "shading mode Gouraud = " << shadingMode;
-           temp = &shaderProgram_gouraud;
-           projectionTransformationLocation_ptr = projectionTransformationLocation_gouraud;
-           viewTransformationLocation_ptr = viewTransformationLocation_gouraud;
-           transformationLocation_ptr = transformationLocation_gouraud;
-           preserveNormalsLocation_ptr = preserveNormalsLocation_gouraud;
-           break;
+            temp = &shaderProgram_gouraud;
+            projectionTransformationLocation_ptr = projectionTransformationLocation_gouraud;
+            viewTransformationLocation_ptr = viewTransformationLocation_gouraud;
+            transformationLocation_ptr = transformationLocation_gouraud;
+            preserveNormalsLocation_ptr = preserveNormalsLocation_gouraud;
+            break;
         }
         case ShadingMode::WATER:{
             qDebug() << "shading mode Water = " << shadingMode;
@@ -340,38 +335,35 @@ void MainView::paintGL() {
             viewTransformationLocation_ptr = viewTransformationLocation_water;
             transformationLocation_ptr = transformationLocation_water;
             preserveNormalsLocation_ptr = preserveNormalsLocation_water;
-           break;
+            break;
         }
     }
 
     temp->bind(); // Bind shader
 
-    if (shadingMode != ShadingMode::WATER){
-        /* ---------------- DRAWING CAT -------------------- */
+    /* ---------------- DRAWING CAT -------------------- */
 
-        //drawShape(0, 0, 3.7f, 0, -10, 0.1f, 0.1f, 0.3f, scalingFactor);
+    //drawShape(0, 0, 3.7f, 0, -10, 0.1f, 0.1f, 0.3f, scalingFactor);
 
-        /* ---------------- DRAWING CUBE -------------------- */
+    /* ---------------- DRAWING CUBE -------------------- */
 
-        //drawShape(1, 1, -3.7f, 0, -10, 0.2f, 0.2f, 0.1f, scalingFactor/4);
+    //drawShape(1, 1, -3.7f, 0, -10, 0.2f, 0.2f, 0.1f, scalingFactor/4);
 
-        /* ---------------- DRAWING FLOATING CUBE -------------------- */
+    /* ---------------- DRAWING FLOATING CUBE -------------------- */
 
-        drawShape(1, 2, 0 + cos(timeIndicator), 0, -10 + sin(timeIndicator), 0.2f, 1.0f, 0.05f, (scalingFactor/5 + individualScalingFactors[2])); // individualScalingFactors has no meaning yet. It's rather a placeholder
+    drawShape(1, 2, 0 + cos(timeIndicator), 0, -10 + sin(timeIndicator), 0.2f, 1.0f, 0.05f, (scalingFactor/5 + individualScalingFactors[2])); // individualScalingFactors has no meaning yet. It's rather a placeholder
 
-        /* ---------------- DRAWING FLOATING CAT -------------------- */
+    /* ---------------- DRAWING FLOATING CAT -------------------- */
 
-        drawShape(0, 3, 3.2f + 2 * cos(timeIndicator), -2 + 3 * sin(timeIndicator),-10, 0.1f, 0.2f, 0.05f, scalingFactor+individualScalingFactors[3]);
+    drawShape(0, 3, 3.2f + 2 * cos(timeIndicator), -2 + 3 * sin(timeIndicator),-10, 0.1f, 0.2f, 0.05f, scalingFactor+individualScalingFactors[3]);
 
-        /* ---------------- DRAWING QUAD -------------------- */
+    /* ---------------- DRAWING QUAD -------------------- */
 
-        drawShape(2, 4, 2.0f, -2,-10, 0.0f, 0.0f, 0.0f, scalingFactor/3);
+    drawShape(2, 4, 2.0f, -2,-10, 0.0f, 0.0f, 0.0f, scalingFactor/3);
 
 
-        timeIndicator += fmod(0.005 * M_PI, 2 * M_PI); // Let objects float around by using this 'angle' in [0,2pi)
-    } else {
-        //TODO: Here can the proper water-drawing stuff go.
-    }
+    timeIndicator += fmod(0.005 * M_PI, 2 * M_PI); // Let objects float around by using this 'angle' in [0,2pi)
+
     temp->release();
 }
 
@@ -444,14 +436,6 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
             break;
         }
         case ShadingMode::NORMAL:{
-            glUniform1f(timeCoefficient, timeIndicator);
-            glUniform3f(wave1location ,wave1.amplitude, wave1.frequency, wave1.phase);
-            glUniform3f(wave2location ,wave2.amplitude, wave2.frequency, wave2.phase);
-            glUniform3f(wave3location ,wave3.amplitude, wave3.frequency, wave3.phase);
-            glUniform3f(materialColor_normal, mat.r, mat.g, mat.b);
-            glUniform3f(materialCoefficients_normal, mat.ka, mat.ks, mat.kd);
-            glUniform3f(lightPosLocation_normal, light.x, light.y, light.z);
-            glUniform3f(lightColLocation_normal, light.r, light.g, light.b);
             break;
         }
         case ShadingMode::GOURAUD:{
@@ -463,8 +447,14 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
             break;
         }
         case ShadingMode::WATER:{
-            // TODO
-            glUniform1f(timeCoefficient, 0.5);
+            glUniform1f(timeCoefficient, timeIndicator);
+            glUniform3f(wave1location ,wave1.amplitude, wave1.frequency, wave1.phase);
+            glUniform3f(wave2location ,wave2.amplitude, wave2.frequency, wave2.phase);
+            glUniform3f(wave3location ,wave3.amplitude, wave3.frequency, wave3.phase);
+            glUniform3f(materialColor_water, mat.r, mat.g, mat.b);
+            glUniform3f(materialCoefficients_water, mat.ka, mat.ks, mat.kd);
+            glUniform3f(lightPosLocation_water, light.x, light.y, light.z);
+            glUniform3f(lightColLocation_water, light.r, light.g, light.b);
             break;
         }
     }

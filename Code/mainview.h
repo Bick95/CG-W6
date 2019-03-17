@@ -77,17 +77,23 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     // Info regarding VertexShader Normal
     GLint transformationLocation_normal;
     GLint projectionTransformationLocation_normal;
-    GLint viewTransformationLocation_normal;
     GLint preserveNormalsLocation_normal;
+
+    // Info regarding VertexShader Water
+    GLint transformationLocation_water;
+    GLint projectionTransformationLocation_water;
+    GLint viewTransformationLocation_water;
+    GLint preserveNormalsLocation_water;
+
     //To move to water shader later
     GLint timeCoefficient;
     GLint wave1location;
     GLint wave2location;
     GLint wave3location;
-    GLint materialColor_normal;
-    GLint materialCoefficients_normal;
-    GLint lightPosLocation_normal;
-    GLint lightColLocation_normal;
+    GLint materialColor_water;
+    GLint materialCoefficients_water;
+    GLint lightPosLocation_water;
+    GLint lightColLocation_water;
 
 
     // Info regarding VertexShader Gouraud
@@ -112,13 +118,6 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     GLint lightColLocation_phong;
     GLint width_phong;
     GLint height_phong;
-
-    // Info regarding VertexShader Water
-    GLint transformationLocation_water;
-    GLint projectionTransformationLocation_water;
-    GLint viewTransformationLocation_water;
-    GLint preserveNormalsLocation_water;
-
     QOpenGLDebugLogger *debugLogger;
     QTimer timer; // timer used for animation
 
