@@ -6,6 +6,7 @@
 #include "QMatrix4x4"
 
 #include <QDateTime>
+#include <cmath>
 
 /**
  * @brief MainView::MainView
@@ -102,7 +103,7 @@ void MainView::initializeGL() {
 
     /* --------------------------------- PLANE MESH -------------------------------------- */
 
-    readInMesh(2, ":/models/grid.obj");
+    readInMesh(2, ":/models/grid.obj", ":/textures/rug_logo.png");
 
     // Related to timer: starts calling paintGL()function 60 times per second
     timer.start(1000.0 / 60.0);
@@ -257,6 +258,22 @@ void MainView::createShaderProgram()
     lightColLocation_phong = shaderProgram_phong.uniformLocation("lightColor");
     width_phong = shaderProgram_phong.uniformLocation("width");
     height_phong = shaderProgram_phong.uniformLocation("height");
+
+    // WATER
+    // Create shader program Water
+    shaderProgram_water.addShaderFromSourceFile(QOpenGLShader::Vertex,
+                                           ":/shaders/vertshader_water.glsl");
+    shaderProgram_water.addShaderFromSourceFile(QOpenGLShader::Fragment,
+                                           ":/shaders/fragshader_water.glsl");
+    shaderProgram_water.link();
+    shaderProgram_water.bind();
+
+
+    // Get locations of where transformation matrices are stored in shader
+    transformationLocation_water = shaderProgram_water.uniformLocation("modelTransform");
+    projectionTransformationLocation_water = shaderProgram_water.uniformLocation("projectionTransform");
+    viewTransformationLocation_water = shaderProgram_water.uniformLocation("viewTransform");
+    preserveNormalsLocation_water = shaderProgram_water.uniformLocation("preserveNormals");
 }
 
 // --- OpenGL drawing
@@ -302,28 +319,45 @@ void MainView::paintGL() {
            preserveNormalsLocation_ptr = preserveNormalsLocation_gouraud;
            break;
         }
+        case ShadingMode::WATER:{
+            qDebug() << "shading mode Water = " << shadingMode;
+            temp = &shaderProgram_water;
+            projectionTransformationLocation_ptr = projectionTransformationLocation_water;
+            viewTransformationLocation_ptr = viewTransformationLocation_water;
+            transformationLocation_ptr = transformationLocation_water;
+            preserveNormalsLocation_ptr = preserveNormalsLocation_water;
+           break;
+        }
     }
 
     temp->bind(); // Bind shader
 
-    /* ---------------- DRAWING CAT -------------------- */
+    if (shadingMode != ShadingMode::WATER){
+        /* ---------------- DRAWING CAT -------------------- */
 
-    drawShape(0, 0, 3.7f, 0, -10, 0.1f, 0.1f, 0.3f, scalingFactor);
+        drawShape(0, 0, 3.7f, 0, -10, 0.1f, 0.1f, 0.3f, scalingFactor);
 
-    /* ---------------- DRAWING CUBE -------------------- */
+        /* ---------------- DRAWING CUBE -------------------- */
 
-    drawShape(1, 1, -3.7f, 0, -10, 0.2f, 0.2f, 0.1f, scalingFactor/4);
+        drawShape(1, 1, -3.7f, 0, -10, 0.2f, 0.2f, 0.1f, scalingFactor/4);
 
-    /* ---------------- DRAWING FLOATING CUBE -------------------- */
+        /* ---------------- DRAWING FLOATING CUBE -------------------- */
 
-    drawShape(1, 2, 0 + cos(timeIndicator), 0, -10 + sin(timeIndicator), 0.2f, 1.0f, 0.05f, (scalingFactor/5 + individualScalingFactors[2])); // individualScalingFactors has no meaning yet. It's rather a placeholder
+        drawShape(1, 2, 0 + cos(timeIndicator), 0, -10 + sin(timeIndicator), 0.2f, 1.0f, 0.05f, (scalingFactor/5 + individualScalingFactors[2])); // individualScalingFactors has no meaning yet. It's rather a placeholder
 
-    /* ---------------- FLOATING AROUND CAT -------------------- */
+        /* ---------------- DRAWING FLOATING CAT -------------------- */
 
-    drawShape(0, 3, 3.2f + 2 * cos(timeIndicator), -2 + 3 * sin(timeIndicator),-10, 0.1f, 0.2f, 0.05f, scalingFactor+individualScalingFactors[3]);
+        drawShape(0, 3, 3.2f + 2 * cos(timeIndicator), -2 + 3 * sin(timeIndicator),-10, 0.1f, 0.2f, 0.05f, scalingFactor+individualScalingFactors[3]);
 
-    timeIndicator += fmod(0.005 * M_PI, 2 * M_PI); // Let objects float around by using this 'angle' in [0,2pi)
+        /* ---------------- DRAWING QUAD -------------------- */
 
+        drawShape(2, 4, 2.0f, -2,-10, 0.1f, 0.2f, 0.05f, scalingFactor);
+
+
+        timeIndicator += fmod(0.005 * M_PI, 2 * M_PI); // Let objects float around by using this 'angle' in [0,2pi)
+    } else {
+        //TODO: Here can the proper water-drawing stuff go.
+    }
     temp->release();
 }
 
@@ -344,14 +378,14 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     transformationMatrixMesh.scale(scale);
 
     // Compute rotation of Mesh in all three directions
-    individualRotationX[objectIndex] += fmod(speedX*M_PI, 2*M_PI);
-    unsigned totalRotationX = rotationX + individualRotationX[objectIndex];
+    individualRotationX[objectIndex] += std::fmod(speedX*M_PI, 2*M_PI);
+    unsigned totalRotationX = rotationX + individualRotationX[objectIndex]; // rotationX = rotation dial input // individualRotationX = causes different rotational speeds between drawn objects
 
-    individualRotationY[objectIndex] += fmod(speedY*M_PI, 2*M_PI);
-    unsigned totalRotationY = rotationY + individualRotationY[objectIndex];
+    individualRotationY[objectIndex] += std::fmod(speedY*M_PI, 2*M_PI);
+    unsigned totalRotationY = rotationY + individualRotationY[objectIndex]; // rotationY = rotation dial input
 
-    individualRotationZ[objectIndex] += fmod(speedZ*M_PI, 2*M_PI);
-    unsigned totalRotationZ = rotationZ + individualRotationZ[objectIndex];
+    individualRotationZ[objectIndex] += std::fmod(speedZ*M_PI, 2*M_PI);
+    unsigned totalRotationZ = rotationZ + individualRotationZ[objectIndex]; // rotationZ = rotation dial input
 
     // Create rotation matrix
     transformationMatrixMesh.rotate(totalRotationX, QVector3D(1.0, 0.0, 0.0));
@@ -404,6 +438,10 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
             glUniform3f(lightColLocation_gouraud, light.r, light.g, light.b);
             glUniform3f(materialColLocation_gouraud, mat.r, mat.g, mat.b);
             glUniform1i(sampler2Dgouraud_Location, 0); // '0' corresponds to 0 in 'glActiveTexture(GL_TEXTURE0);' (above)
+            break;
+        }
+        case ShadingMode::WATER:{
+            // TODO
             break;
         }
     }

@@ -78,6 +78,15 @@ void MainWindow::on_NormalButton_toggled(bool checked)
     }
 }
 
+void MainWindow::on_WaterButton_toggled(bool checked)
+{
+    if (checked)
+    {
+        ui->mainView->setShadingMode(MainView::WATER);
+        ui->mainView->update();
+    }
+}
+
 void MainWindow::on_GouraudButton_toggled(bool checked)
 {
     if (checked)
@@ -140,6 +149,9 @@ void MainWindow::on_Light_Blue_Slider_sliderMoved(int value)
 // Pretend changing view location
 void MainWindow::on_ResetViewButton_clicked(bool checked)
 {
+    ui->ViewRotationDialX->setValue(0);
+    ui->ViewRotationDialY->setValue(0);
+    ui->ViewRotationDialZ->setValue(0);
     ui->mainView->resetView();
 };
 

@@ -97,18 +97,25 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     GLint width_phong;
     GLint height_phong;
 
+    // Info regarding VertexShader Normal
+    GLint transformationLocation_water;
+    GLint projectionTransformationLocation_water;
+    GLint viewTransformationLocation_water;
+    GLint preserveNormalsLocation_water;
+
     QOpenGLDebugLogger *debugLogger;
     QTimer timer; // timer used for animation
 
     QOpenGLShaderProgram shaderProgram_normal;
     QOpenGLShaderProgram shaderProgram_gouraud;
     QOpenGLShaderProgram shaderProgram_phong;
+    QOpenGLShaderProgram shaderProgram_water;
     QOpenGLShaderProgram* temp;
 
 public:
     enum ShadingMode : GLuint
     {
-        PHONG = 0, NORMAL, GOURAUD
+        PHONG = 0, NORMAL, GOURAUD, WATER
     };
 
     MainView(QWidget *parent = 0);

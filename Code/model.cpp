@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
+#include <cmath>
 
 // A Private Vertex class for vertex comparison
 // DO NOT include "vertex.h" or something similar in this file
@@ -89,7 +90,7 @@ void Model::unitize() {
     int x = 1, y = 1, z = 1;
     int length = 0;
     for (int i = 0; i < vertices.size(); i++){
-        length = sqrt(pow(vertices[i].x(),2) + pow(vertices[i].y(),2) + pow(vertices[i].z(),2));
+        length = std::sqrt(std::pow(vertices[i].x(),2) + std::pow(vertices[i].y(),2) + std::pow(vertices[i].z(),2));
         if (length > max){
             max = length;
             x = std::abs(vertices[i].x());
@@ -99,9 +100,9 @@ void Model::unitize() {
 
     }
     for (int i = 0; i < vertices.size(); i++){
-        vertices[i].setX(vertices[i].x()/x);
-        vertices[i].setY(vertices[i].y()/y);
-        vertices[i].setZ(vertices[i].z()/z);
+        if (x != 0) vertices[i].setX(vertices[i].x()/x);
+        if (y != 0) vertices[i].setY(vertices[i].y()/y);
+        if (z != 0) vertices[i].setZ(vertices[i].z()/z);
     }
 }
 
