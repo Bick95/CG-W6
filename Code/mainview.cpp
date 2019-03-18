@@ -176,7 +176,7 @@ void MainView::readInMesh(unsigned meshIdx, QString path, QString texture){
                           8 * sizeof(GL_FLOAT), // Specifies the byte offset between consecutive generic vertex attributes. If stride is 0, the generic vertex attributes are understood to be tightly packed in the array. The initial value is 0.
                           (GLvoid*) (6 * sizeof(float))); // Specifies an offset of the first component of the first generic vertex attribute in the array in the data store of the buffer currently bound to the GL_ARRAY_BUFFER target. The initial value is 0.
 
-    if (texture != nullptr){
+    if (texture != nullptr){ // It could be that an object has no texture assined.
         // Generate and set ptr to texture
         glGenTextures(1, &textures[meshIdx]);
         // Reading in & binding texture
@@ -378,7 +378,7 @@ void MainView::paintGL() {
     drawShape(2, 4, 2.0f, -2,-10, 0.0f, 0.0f, 0.0f, scalingFactor);
 
 
-    timeIndicator += fmod(0.005 * M_PI, 2 * M_PI); // Let objects float around by using this 'angle' in [0,2pi)
+    timeIndicator += std::fmod(0.005 * M_PI, 2 * M_PI); // Let objects float around by using this 'angle' in [0,2pi)
 
     temp->release();
 }
@@ -400,12 +400,15 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
 
     // Compute rotation of Mesh in all three directions
     individualRotationX[objectIndex] += std::fmod(speedX*M_PI, 2*M_PI);
+    individualRotationX[objectIndex] = std::fmod(individualRotationX[objectIndex], 360);
     unsigned totalRotationX = rotationX + individualRotationX[objectIndex]; // rotationX = rotation dial input // individualRotationX = causes different rotational speeds between drawn objects
 
     individualRotationY[objectIndex] += std::fmod(speedY*M_PI, 2*M_PI);
+    individualRotationY[objectIndex] = std::fmod(individualRotationY[objectIndex], 360);
     unsigned totalRotationY = rotationY + individualRotationY[objectIndex]; // rotationY = rotation dial input
 
     individualRotationZ[objectIndex] += std::fmod(speedZ*M_PI, 2*M_PI);
+    individualRotationZ[objectIndex] = std::fmod(individualRotationZ[objectIndex], 360);
     unsigned totalRotationZ = rotationZ + individualRotationZ[objectIndex]; // rotationZ = rotation dial input
 
     // Create rotation matrix
