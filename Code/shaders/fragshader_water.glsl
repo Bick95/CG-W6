@@ -49,5 +49,5 @@ void main()
     vec3 specular = pow(max(0,dot(V, R)), p) * lColor * ks;
 
     vec3 fColor = ambient + diffuse + specular ;
-    col =  vec4(mix(0,1,fColor[0]),mix(0,1,fColor[1]), mix(1,1,fColor[2]), 1 );
+    col =  vec4(smoothstep(0.8, 0.95,mix(0,1,fColor[0])),smoothstep(0.8, 0.95, mix(0.467,1,fColor[1])), smoothstep(0.8, 0.95, mix(0.745,1,fColor[2])), 1 );
 }

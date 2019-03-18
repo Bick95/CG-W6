@@ -26,9 +26,9 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     Light light = {1,1,1,0.0,0.0,0.0};
 
     //waves
-    Wave wave1 = {0.1, 1.0, 0.0};
-    Wave wave2 = {0.08, 3.0, 0.5};
-    Wave wave3 = {0.05, 5.0, 1.0};
+    Wave wave1 = {0.08, 0.5, 0.0};
+    Wave wave2 = {0.05, 1.0, 0.5};
+    Wave wave3 = {0.03, 2.0, 1.0};
 
     const static unsigned models = 3; // Number of different models to be used for drawing
 

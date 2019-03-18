@@ -359,7 +359,7 @@ void MainView::paintGL() {
 
     /* ---------------- DRAWING QUAD -------------------- */
 
-    drawShape(2, 4, 2.0f, -2,-10, 0.0f, 0.0f, 0.0f, scalingFactor/3);
+    drawShape(2, 4, 2.0f, -2,-10, 0.0f, 0.0f, 0.0f, scalingFactor);
 
 
     timeIndicator += fmod(0.005 * M_PI, 2 * M_PI); // Let objects float around by using this 'angle' in [0,2pi)
