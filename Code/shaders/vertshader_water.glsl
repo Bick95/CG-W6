@@ -29,11 +29,11 @@ uniform float frequencies[3];
 uniform float phases[3];
 
 float waveHeight1(in float u){
-    float h = 0;
+    float height = 0;
     for (int i = 0; i < 3; i++){
-        h += amplitudes[i] * sin(2*3.141593 * (frequencies[i] * u + timeCoeff + phases[i]));
+        height += amplitudes[i] * sin(2*3.141593 * (frequencies[i] * u + timeCoeff + phases[i]));
     }
-    return h;
+    return height;
 }
 
 float waveHeight(in float u, vec3 wave ){ // take wave out; it's kinda obsolete
@@ -41,12 +41,12 @@ float waveHeight(in float u, vec3 wave ){ // take wave out; it's kinda obsolete
     return height;
 }
 
-float waveDU(in float u){ // take wave out; it's kinda obsolete
-    float h = 0;
-    for (int i = 0; i < numWaves; i++){
-        h += amplitudes[i] * cos(2*3.141593 * (frequencies[i] * u + timeCoeff + phases[i])) * frequencies[i] * 2*3.141593;
+float waveDU1(in float u){ // take wave out; it's kinda obsolete
+    float height = 0;
+    for (int i = 0; i < 3; i++){
+        height += amplitudes[i] * cos(2*3.141593 * (frequencies[i] * u + timeCoeff + phases[i])) * frequencies[i] * 2*3.141593 ;
     }
-    return h;
+    return height;
 }
 
 float waveDU(in float u, vec3 wave ){ // take wave out; it's kinda obsolete
@@ -64,8 +64,9 @@ void main()
 
     // Suggestion:
     position.z = waveHeight1(position.x); // using suggestion in waveHeight()
-    //normals = normalize(vec3( - waveDU(position.x), 0, 1.0)) // using suggestion in waveDU()
+    //normals = normalize(vec3(-waveDU1(position.x), 0.0, 1.0)); // THIS ONE doesn't work for some reason
 
+    // Working version
     //position.z =  waveHeight(position.x, wave1) + waveHeight(position.x, wave2) +  waveHeight(position.x, wave3);
     normals = normalize(vec3( - waveDU(position.x, wave1), 0, 1.0) + vec3( - waveDU(position.x, wave2), 0, 0.0) + vec3( - waveDU(position.x, wave3), 0, 0.0));
 
