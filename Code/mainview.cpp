@@ -90,6 +90,16 @@ void MainView::initializeGL() {
     }
 
     timeIndicator = 0;
+
+    // Waves
+    float amplitudesVals[] = {0.08, 0.05, 0.02};
+    float frequenciesVals[] = {0.08, 0.05, 0.02};
+    float phasesVals[] = {0.08, 0.05, 0.02};
+
+    *amplitudes = amplitudesVals;
+    *frequencies = frequenciesVals;
+    *phases = phasesVals;
+
     resetView();
     resetZoom();
 
@@ -284,6 +294,10 @@ void MainView::createShaderProgram()
     materialCoefficients_water = shaderProgram_water.uniformLocation("coeffs");
     lightPosLocation_water = shaderProgram_water.uniformLocation("lPos");
     lightColLocation_water = shaderProgram_water.uniformLocation("lColor");
+    amplitudesLocation_water = shaderProgram_water.uniformLocation("amplitudes");
+    frequenciesLocation_water = shaderProgram_water.uniformLocation("frequencies");
+    phasesLocation_water = shaderProgram_water.uniformLocation("phases");
+
 
 }
 
@@ -456,6 +470,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
             glUniform3f(materialCoefficients_water, mat.ka, mat.ks, mat.kd);
             glUniform3f(lightPosLocation_water, light.x, light.y, light.z);
             glUniform3f(lightColLocation_water, light.r, light.g, light.b);
+//            glUniform1fv();
             break;
         }
     }

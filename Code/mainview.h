@@ -30,6 +30,12 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     Wave wave2 = {0.05, 1.0, 0.5};
     Wave wave3 = {0.03, 2.0, 1.0};
 
+    // Waves
+    const static int numWaves = 3;
+    float *amplitudes[numWaves];
+    float *frequencies[numWaves];
+    float *phases[numWaves];
+
     const static unsigned models = 3; // Number of different models to be used for drawing
 
     Model model[models];
@@ -84,6 +90,9 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     GLint projectionTransformationLocation_water;
     GLint viewTransformationLocation_water;
     GLint preserveNormalsLocation_water;
+    GLint amplitudesLocation_water;
+    GLint frequenciesLocation_water;
+    GLint phasesLocation_water;
 
     //To move to water shader later
     GLint timeCoefficient;

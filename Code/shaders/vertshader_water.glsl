@@ -24,6 +24,9 @@ uniform vec3 amplitude[];
 uniform vec3 frequency[];
 uniform vec3 phase[];
 
+uniform float amplitudes[3];
+uniform float frequencies[3];
+uniform float phases[3];
 
 float waveHeight(in float u, vec3 wave ){ // take wave out; it's kinda obsolete
     // My suggestion:
