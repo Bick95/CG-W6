@@ -63,12 +63,13 @@ void main()
     vec4 position = vec4(vertCoordinates_in, 1.0);
 
     // Suggestion:
-    position.z = waveHeight1(position.x); // using suggestion in waveHeight()
+    //position.z = waveHeight1(position.x); // using suggestion in waveHeight()
     //normals = normalize(vec3(-waveDU1(position.x), 0.0, 1.0)); // THIS ONE doesn't work for some reason
 
     // Working version
-    //position.z =  waveHeight(position.x, wave1) + waveHeight(position.x, wave2) +  waveHeight(position.x, wave3);
-    normals = normalize(vec3( - waveDU(position.x, wave1), 0, 1.0) + vec3( - waveDU(position.x, wave2), 0, 0.0) + vec3( - waveDU(position.x, wave3), 0, 0.0));
+    position.z =  waveHeight(position.x, wave1) + waveHeight(position.x, wave2) +  waveHeight(position.x, wave3);
+    //normals = normalize(vec3( - waveDU(position.x, wave1), 0, 1.0) + vec3( - waveDU(position.x, wave2), 0, 1.0) + vec3( - waveDU(position.x, wave3), 0, 1.0));
+    normals = normalize(vec3(- waveDU(position.x, wave1) - waveDU(position.x, wave2) - waveDU(position.x, wave3), 0, 1.0));
 
     // Transform input vector -- Check again
     coordinates = modelTransform*position;
