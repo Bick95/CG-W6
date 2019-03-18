@@ -33,7 +33,7 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     const static unsigned models = 3; // Number of different models to be used for drawing
 
     Model model[models];
-    unsigned lenMeshes[models];
+    int lenMeshes[models];
 
     // Texture components
     GLuint textures[models];
@@ -66,7 +66,6 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     QMatrix4x4 transformationMatrixMesh = QMatrix4x4();
     QMatrix4x4 transformationPerspective = QMatrix4x4();
     QMatrix4x4 transformationMatrixView = QMatrix4x4();
-    QMatrix4x4 transformationView = QMatrix4x4();
 
     // Pointers for changing between vertex shaders
     GLint transformationLocation_ptr;
@@ -78,6 +77,7 @@ class MainView : public QOpenGLWidget, protected QOpenGLFunctions_3_3_Core {
     GLint transformationLocation_normal;
     GLint projectionTransformationLocation_normal;
     GLint preserveNormalsLocation_normal;
+    GLint viewTransformationLocation_normal;
 
     // Info regarding VertexShader Water
     GLint transformationLocation_water;

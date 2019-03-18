@@ -207,6 +207,7 @@ void MainView::createShaderProgram()
     // Get locations of where transformation matrices are stored in shader
     transformationLocation_normal = shaderProgram_normal.uniformLocation("modelTransform");
     projectionTransformationLocation_normal = shaderProgram_normal.uniformLocation("projectionTransform");
+    viewTransformationLocation_normal = shaderProgram_normal.uniformLocation("viewTransform");
     preserveNormalsLocation_normal = shaderProgram_normal.uniformLocation("preserveNormals");
 
     // GOURAUD
@@ -303,7 +304,7 @@ void MainView::paintGL() {
     // Select shading mode
     switch (shadingMode) {
         case ShadingMode::PHONG:{
-            qDebug() << "shading mode Phong = " << shadingMode;
+            //qDebug() << "shading mode Phong = " << shadingMode;
             temp = &shaderProgram_phong;
             projectionTransformationLocation_ptr = projectionTransformationLocation_phong;
             viewTransformationLocation_ptr = viewTransformationLocation_phong;
@@ -312,15 +313,16 @@ void MainView::paintGL() {
             break;
         }
         case ShadingMode::NORMAL:{
-            qDebug() << "shading mode Normal = " << shadingMode;
+            //qDebug() << "shading mode Normal = " << shadingMode;
             temp = &shaderProgram_normal;
             projectionTransformationLocation_ptr = projectionTransformationLocation_normal;
+            viewTransformationLocation_ptr = viewTransformationLocation_normal;
             transformationLocation_ptr = transformationLocation_normal;
             preserveNormalsLocation_ptr = preserveNormalsLocation_normal;
             break;
         }
         case ShadingMode::GOURAUD:{
-            qDebug() << "shading mode Gouraud = " << shadingMode;
+            //qDebug() << "shading mode Gouraud = " << shadingMode;
             temp = &shaderProgram_gouraud;
             projectionTransformationLocation_ptr = projectionTransformationLocation_gouraud;
             viewTransformationLocation_ptr = viewTransformationLocation_gouraud;
@@ -329,7 +331,7 @@ void MainView::paintGL() {
             break;
         }
         case ShadingMode::WATER:{
-            qDebug() << "shading mode Water = " << shadingMode;
+            //qDebug() << "shading mode Water = " << shadingMode;
             temp = &shaderProgram_water;
             projectionTransformationLocation_ptr = projectionTransformationLocation_water;
             viewTransformationLocation_ptr = viewTransformationLocation_water;
@@ -373,7 +375,6 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
     QMatrix3x3 preserveNormals = QMatrix3x3();
     transformationMatrixMesh = QMatrix4x4();
     transformationMatrixView = QMatrix4x4();
-    transformationMatrixMesh.setToIdentity();
 
     // For drawing textures
     glActiveTexture(GL_TEXTURE0);
