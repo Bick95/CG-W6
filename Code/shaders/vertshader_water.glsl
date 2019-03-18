@@ -28,24 +28,28 @@ uniform float amplitudes[3];
 uniform float frequencies[3];
 uniform float phases[3];
 
-float waveHeight(in float u, vec3 wave ){ // take wave out; it's kinda obsolete
-    // My suggestion:
-    /*float h = 0;
-    for (int i = 0; i < numWaves; i++){
-        h = amplitude[i] * sin(2*3.141593 * (frequency[i] * u + timeCoeff + phase[i]));
+float waveHeight1(in float u){
+    float h = 0;
+    for (int i = 0; i < 3; i++){
+        h += amplitudes[i] * sin(2*3.141593 * (frequencies[i] * u + timeCoeff + phases[i]));
     }
-    return h;*/
+    return h;
+}
+
+float waveHeight(in float u, vec3 wave ){ // take wave out; it's kinda obsolete
     float height = wave[0] * sin(2*3.141593 * (wave[1] * u + timeCoeff + wave[2]));
     return height;
 }
 
-float waveDU(in float u, vec3 wave ){ // take wave out; it's kinda obsolete
-    // My suggestion:
-    /*float h = 0;
+float waveDU(in float u){ // take wave out; it's kinda obsolete
+    float h = 0;
     for (int i = 0; i < numWaves; i++){
-        h = amplitude[i] * cos(2*3.141593 * (frequency[i] * u + timeCoeff + phase[i])) * frequency[i] * 2*3.141593;
+        h += amplitudes[i] * cos(2*3.141593 * (frequencies[i] * u + timeCoeff + phases[i])) * frequencies[i] * 2*3.141593;
     }
-    return h;*/
+    return h;
+}
+
+float waveDU(in float u, vec3 wave ){ // take wave out; it's kinda obsolete
     float height = wave[0] * cos(2*3.141593 * (wave[1] * u + timeCoeff + wave[2])) * wave[1] * 2*3.141593 ;
     return height;
 }
@@ -59,10 +63,10 @@ void main()
     vec4 position = vec4(vertCoordinates_in, 1.0);
 
     // Suggestion:
-    //position.z = waveHeight(u); // using suggestion in waveHeight()
+    position.z = waveHeight1(position.x); // using suggestion in waveHeight()
     //normals = normalize(vec3( - waveDU(position.x), 0, 1.0)) // using suggestion in waveDU()
 
-    position.z =  waveHeight(position.x, wave1) + waveHeight(position.x, wave2) +  waveHeight(position.x, wave3);
+    //position.z =  waveHeight(position.x, wave1) + waveHeight(position.x, wave2) +  waveHeight(position.x, wave3);
     normals = normalize(vec3( - waveDU(position.x, wave1), 0, 1.0) + vec3( - waveDU(position.x, wave2), 0, 0.0) + vec3( - waveDU(position.x, wave3), 0, 0.0));
 
     // Transform input vector -- Check again

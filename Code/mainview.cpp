@@ -92,9 +92,9 @@ void MainView::initializeGL() {
     timeIndicator = 0;
 
     // Waves
-    float amplitudesVals[] = {0.08, 0.05, 0.02};
-    float frequenciesVals[] = {0.08, 0.05, 0.02};
-    float phasesVals[] = {0.08, 0.05, 0.02};
+    float amplitudesVals[] = {0.08f, 0.05f, 0.03f};
+    float frequenciesVals[] = {0.5f, 1.0f, 2.0f};
+    float phasesVals[] = {0.0f, 0.5f, 1.0f};
 
     *amplitudes = amplitudesVals;
     *frequencies = frequenciesVals;
@@ -470,7 +470,9 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
             glUniform3f(materialCoefficients_water, mat.ka, mat.ks, mat.kd);
             glUniform3f(lightPosLocation_water, light.x, light.y, light.z);
             glUniform3f(lightColLocation_water, light.r, light.g, light.b);
-//            glUniform1fv();
+            glUniform1fv(amplitudesLocation_water, numWaves, *amplitudes);
+            glUniform1fv(frequenciesLocation_water, numWaves, *frequencies);
+            glUniform1fv(phasesLocation_water, numWaves, *phases);
             break;
         }
     }
