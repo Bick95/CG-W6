@@ -359,11 +359,11 @@ void MainView::paintGL() {
 
     /* ---------------- DRAWING CAT -------------------- */
 
-    //drawShape(0, 0, 3.7f, 0, -10, 0.1f, 0.1f, 0.3f, scalingFactor);
+    drawShape(0, 0, 3.7f, 0, -10, 0.1f, 0.1f, 0.3f, scalingFactor);
 
     /* ---------------- DRAWING CUBE -------------------- */
 
-    //drawShape(1, 1, -3.7f, 0, -10, 0.2f, 0.2f, 0.1f, scalingFactor/4);
+    drawShape(1, 1, -3.7f, 0, -10, 0.2f, 0.2f, 0.1f, scalingFactor/4);
 
     /* ---------------- DRAWING FLOATING CUBE -------------------- */
 
@@ -473,6 +473,7 @@ void MainView::drawShape(int meshIdx, int objectIndex, float x, float y, float z
             glUniform3f(materialCoefficients_water, mat.ka, mat.ks, mat.kd);
             glUniform3f(lightPosLocation_water, light.x, light.y, light.z);
             glUniform3f(lightColLocation_water, light.r, light.g, light.b);
+            // Experimental:
             glUniform1fv(amplitudesLocation_water, numWaves, *amplitudes);
             glUniform1fv(frequenciesLocation_water, numWaves, *frequencies);
             glUniform1fv(phasesLocation_water, numWaves, *phases);
